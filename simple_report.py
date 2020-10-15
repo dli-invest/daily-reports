@@ -10,4 +10,4 @@ chart = alt.Chart(df).encode(
 ).mark_line().interactive()
 
 r = dp.Report(dp.Table(df), dp.Plot(chart))
-r.save(path='report.html', open=True)
+r.save(path='index.html', open=True)
