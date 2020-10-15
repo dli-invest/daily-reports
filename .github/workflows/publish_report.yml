@@ -27,7 +27,7 @@ jobs:
       run: |
         mkdir report
         python simple_report.py
-        cp report.html report/
+        cp index.html report/
 
     - name: Deploy 🚀
       uses: JamesIves/github-pages-deploy-action@3.6.2
