@@ -1,0 +1,38 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        # Semantic version range syntax or exact version of a Python version
+        python-version: '3.6' 
+        # Optional - x64 or x86 architecture, defaults to x64
+        architecture: 'x64' 
+    # You can test your matrix by printing the current Python version
+    - name: Display Python version
+      run: python -c "import sys; print(sys.version)"
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Build Report
+      run: |
+        mkdir report
+        python simple_report.py
+        cp report.html report/
+
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@3.6.2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: build # The folder the action should deploy.
+        CLEAN: true # Automatically remove deleted files from the deploy branch
