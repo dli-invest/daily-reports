@@ -1,13 +1,63 @@
 import pandas as pd
-import altair as alt
 import datapane as dp
+import yfinance as yf
+import matplotlib.pyplot as plt
+import random
+from datetime import datetime, timedelta
 
-df = pd.read_csv('https://query1.finance.yahoo.com/v7/finance/download/GOOG?period2=1585222905&interval=1mo&events=history')
+def generate_up(stocks: list, start_date: str="2020-03-01", end_date: str="2020-05-30"):
+    stocks_string = " ".join(stocks)
+    data = yf.download(stocks_string, start=start_date, end=end_date,
+                      group_by="ticker")
+    data = data.fillna(method='ffill')
+    # Drop columns with no entries
+    data = data.dropna(axis='columns', how='all')
 
-chart = alt.Chart(df).encode(
-    x='Date:T',
-    y='Open'
-).mark_line().interactive()
+    full_df = pd.concat([data[ticker]["Close"] for ticker in stocks], axis=1)
+    full_df.columns = stocks
+    full_df = full_df.sort_index(ascending=False)
+    return full_df
 
-r = dp.Report(dp.Table(df), dp.Plot(chart))
+def random_line_color():
+    return random.choice([
+        'black',
+        'blue',
+        'red',
+        'green'
+    ])
+
+def intraday_plot(stock_ticker: str, start_date: str="2020-03-01", end_date: str="2020-05-30"):
+    plt.figure(figsize=(8, 8))
+    data = yf.download(stock_ticker, start=start_date, end=end_date, interval='30m')
+    random_color = random_line_color()
+    ax = data['Close'].plot(color=random_color)
+    ax.set_xlabel("Date")
+    # Eventually map .CN, .V to CAD
+    # only cad stocks for now
+    ax.set_ylabel("Price ($)")
+    ax.set_title(f"{stock_ticker} - {start_date} to {end_date}")
+    # ax.set_color(random_color)
+    return ax
+
+
+stock_list = ["NTAR.CN",
+    "IDK.CN", 
+    "ART.V",
+    "PKK.CN",
+    "APHA.TO",
+    "CMC.CN",
+    "AMPD.CN",
+    "MTRX.V"]
+
+curr_date = datetime.today().strftime('%Y-%m-%d')
+start_date = (datetime.today() - timedelta(days=59)).strftime('%Y-%m-%d')
+
+df_assets = generate_up(stock_list, start_date, curr_date)
+
+figure_list = [dp.Plot(intraday_plot(stock, start_date, curr_date)) for stock in stock_list]
+
+r = dp.Report(
+    f'### Intraday Report for {curr_date}',
+    dp.Table(df_assets), 
+    dp.Blocks(*figure_list, columns=2))
 r.save(path='index.html', open=True)
