@@ -2,6 +2,9 @@ name: Python package
 
 on: [push]
 
+env:
+  DP_TOKEN: ${{ secrets.DP_TOKEN }}
+
 jobs:
   build:
 
