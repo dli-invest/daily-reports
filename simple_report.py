@@ -3,8 +3,8 @@ import datapane as dp
 import yfinance as yf
 import matplotlib.pyplot as plt
 import random
+import os
 from datetime import datetime, timedelta
-
 def generate_up(stocks: list, start_date: str="2020-03-01", end_date: str="2020-05-30"):
     stocks_string = " ".join(stocks)
     data = yf.download(stocks_string, start=start_date, end=end_date,
@@ -56,8 +56,23 @@ df_assets = generate_up(stock_list, start_date, curr_date)
 
 figure_list = [dp.Plot(intraday_plot(stock, start_date, curr_date)) for stock in stock_list]
 
+
+publish_report = False
+dp_token = os.getenv('DP_TOKEN')
+if dp_token:
+    # login
+    try:
+        dp.login(token=dp_token)
+        publish_report = True
+    except Exception as e:
+        print(e)
+
+# login
 r = dp.Report(
     f'### Intraday Report for {curr_date}',
     dp.Table(df_assets), 
     dp.Blocks(*figure_list, columns=2))
 r.save(path='index.html', open=True)
+
+if publish_report == True:
+    r.publish(name='stock_report')
