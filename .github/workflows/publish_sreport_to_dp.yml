@@ -1,0 +1,30 @@
+name: Publish to Datapane
+
+env:
+  DP_TOKEN: ${{ secrets.DP_TOKEN }}
+
+on: 
+  push:
+    branches:
+      - main
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '40 4 * * 0'
+
+jobs:
+  build_report:
+    runs-on: ubuntu-latest
+    name: Run end-of-week Datapane reports
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - uses: datapane/build-action@v2
+        with:
+          script: "stock_tickers_of_interest.py"
+          token: ${{ secrets.DP_TOKEN }}
