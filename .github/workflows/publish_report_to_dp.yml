@@ -1,5 +1,8 @@
 name: Publish to Datapane
 
+env:
+  DP_TOKEN: ${{ secrets.DP_TOKEN }}
+
 on: 
   push:
     branches:
