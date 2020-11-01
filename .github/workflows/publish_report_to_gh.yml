@@ -1,9 +1,6 @@
-name: Python package
+name: Publish to GH pages
 
 on: [push]
-
-env:
-  DP_TOKEN: ${{ secrets.DP_TOKEN }}
 
 jobs:
   build:
