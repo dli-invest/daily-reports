@@ -17,6 +17,10 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.8
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - uses: datapane/build-action@v2
         with:
           script: "simple_report.py"
