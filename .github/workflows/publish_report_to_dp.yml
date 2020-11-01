@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  schedules:
+  schedule:
     # * is a special character in YAML so you have to quote this string
     - cron:  '40 4 * * 0'
 
