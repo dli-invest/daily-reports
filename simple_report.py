@@ -62,7 +62,6 @@ dp_token = os.getenv('DP_TOKEN')
 if dp_token:
     # login
     try:
-        dp.login(token=dp_token)
         publish_report = True
     except Exception as e:
         print(e)
@@ -75,4 +74,4 @@ r = dp.Report(
 r.save(path='index.html', open=True)
 
 if publish_report == True:
-    r.publish(name='stock_report')
+    r.publish(name='Daily Report',  open=False, tweet=False)

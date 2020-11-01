@@ -1,0 +1,13 @@
+jobs:
+  build_report:
+    runs-on: ubuntu-latest
+    name: Run end-of-week Datapane reports
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - uses: datapane/build-action@v2
+        with:
+          script: "simple_report.py"
+          token: ${{ secrets.DP_TOKEN }}
