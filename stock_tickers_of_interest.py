@@ -90,7 +90,7 @@ def industry_to_md(industry_list):
 
 pattern = '(?i)Waste Management|(?i)Interactive Media|(?i)Telecommunication Services|(?i)Software|(?i)Hardware'
 
-desired_df = stock_df['industry'].str.contains(pattern)
+desired_df = stock_df[stock_df['industry'].str.contains(pattern)]
 
 industry_list = industry_to_md(industries)
 curr_date = datetime.today().strftime('%Y-%m-%d')
